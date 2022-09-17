@@ -752,7 +752,7 @@ An OR pattern is two or more patterns separated by vertical
 bars ``|``.  Syntax:
 
 .. productionlist:: python-grammar
-   or_pattern: "|".`closed_pattern`+
+   or_pattern: "|"? "|".`closed_pattern`+
 
 Only the final subpattern may be :ref:`irrefutable <irrefutable_case>`, and each
 subpattern must bind the same set of names to avoid ambiguity.
