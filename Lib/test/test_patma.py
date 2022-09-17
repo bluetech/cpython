@@ -2668,6 +2668,22 @@ class TestPatma(unittest.TestCase):
         setattr(c, "__attr", "spam")  # setattr is needed because we're in a class scope
         self.assertEqual(Outer().f(c), "spam")
 
+    def test_patma_250(self):
+        match 10:
+            case | 10:
+                x = True
+        assert x is True
+
+    def test_patma_251(self):
+        match 10:
+            case (
+                | 1
+                | 10
+                | 2
+            ):
+                x = True
+        assert x is True
+
 
 class TestSyntaxErrors(unittest.TestCase):
 
@@ -2686,6 +2702,17 @@ class TestSyntaxErrors(unittest.TestCase):
         self.assert_syntax_error("""
         match ...:
             case [a, [b] | [c] | [d]]:
+                pass
+        """)
+
+    def test_alternative_patterns_only_one_leading_vertical_bar(self):
+        self.assert_syntax_error("""
+        match ...:
+            case (
+                |
+                | b
+                | c
+            ):
                 pass
         """)
 

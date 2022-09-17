@@ -7866,7 +7866,7 @@ as_pattern_rule(Parser *p)
     return _res;
 }
 
-// or_pattern: '|'.closed_pattern+
+// or_pattern: '|'? '|'.closed_pattern+
 static pattern_ty
 or_pattern_rule(Parser *p)
 {
@@ -7889,18 +7889,22 @@ or_pattern_rule(Parser *p)
     UNUSED(_start_lineno); // Only used by EXTRA macro
     int _start_col_offset = p->tokens[_mark]->col_offset;
     UNUSED(_start_col_offset); // Only used by EXTRA macro
-    { // '|'.closed_pattern+
+    { // '|'? '|'.closed_pattern+
         if (p->error_indicator) {
             p->level--;
             return NULL;
         }
-        D(fprintf(stderr, "%*c> or_pattern[%d-%d]: %s\n", p->level, ' ', _mark, p->mark, "'|'.closed_pattern+"));
+        D(fprintf(stderr, "%*c> or_pattern[%d-%d]: %s\n", p->level, ' ', _mark, p->mark, "'|'? '|'.closed_pattern+"));
+        void *_opt_var;
+        UNUSED(_opt_var); // Silence compiler warnings
         asdl_pattern_seq* patterns;
         if (
+            (_opt_var = _PyPegen_expect_token(p, 18), !p->error_indicator)  // '|'?
+            &&
             (patterns = (asdl_pattern_seq*)_gather_65_rule(p))  // '|'.closed_pattern+
         )
         {
-            D(fprintf(stderr, "%*c+ or_pattern[%d-%d]: %s succeeded!\n", p->level, ' ', _mark, p->mark, "'|'.closed_pattern+"));
+            D(fprintf(stderr, "%*c+ or_pattern[%d-%d]: %s succeeded!\n", p->level, ' ', _mark, p->mark, "'|'? '|'.closed_pattern+"));
             Token *_token = _PyPegen_get_last_nonnwhitespace_token(p);
             if (_token == NULL) {
                 p->level--;
@@ -7920,7 +7924,7 @@ or_pattern_rule(Parser *p)
         }
         p->mark = _mark;
         D(fprintf(stderr, "%*c%s or_pattern[%d-%d]: %s failed!\n", p->level, ' ',
-                  p->error_indicator ? "ERROR!" : "-", _mark, p->mark, "'|'.closed_pattern+"));
+                  p->error_indicator ? "ERROR!" : "-", _mark, p->mark, "'|'? '|'.closed_pattern+"));
     }
     _res = NULL;
   done:
